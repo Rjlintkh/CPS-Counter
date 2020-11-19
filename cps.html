@@ -1,0 +1,158 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale = 1.0, user-scalable=no">
+		<title>Click Counter</title>
+		<style>
+			* {
+				font-family: Arial;
+				user-select: none;
+				-webkit-user-select: none;
+				-ms-user-select: none;
+			}
+			body {
+				margin: 0
+			}
+			div.panel {
+				height: 100%;
+				position: fixed;
+				width: 50%;
+			}
+			div.panel.left {
+				background-color: #96f5b4;
+				left: 0;
+				top: 0
+			}
+			div.panel.right {
+				background-color: #96e1f5;
+				right: 0;
+				top: 0
+			}
+			span.label {
+				color: white;
+				display: inline-block;
+				text-align: center
+			}
+			span.label.cps {
+				display: block;
+				font-size: 40vmin;
+				margin-top: 15%;
+			}
+			span.label.max {
+				float: left;
+				font-size: 5vmin;
+				margin-left: 20%
+			}
+			span.label.max::before {
+				content: "Max: ";
+			}
+			span.label.total {
+				float: right;
+				font-size: 5vmin;
+				margin-right: 20%
+			}
+			span.label.total::before {
+				content: "Total: ";
+			}
+			div.water-mark {
+				color: white;
+				position: absolute;
+				bottom: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="panel left">
+			<span class="label cps">0</span>
+			<span class="label max">0</span>
+			<span class="label total">0</span>
+		</div>
+		<div class="panel right">
+			<span class="label cps">0</span>
+			<span class="label max">0</span>
+			<span class="label total">0</span>
+		</div>
+		<div class="water-mark">By PneuJai (H Pneumonia)</div>
+		<script>
+			{
+				let clicks = [];
+				let max = 0;
+				let total = 0;
+				var getLeftCPS = function() {
+					return clicks.length;
+				}
+				var getLeftMax = function() {
+					return max;
+				}
+				var getLeftTotal = function() {
+					return total;
+				}
+				document.addEventListener("mousedown", event => {
+					if (event.button === 0) {
+						let currentTime = new Date();
+						total++;
+						clicks.push(currentTime);
+					}
+				});
+				document.addEventListener("touchstart", event => {
+					let currentTime = new Date();
+					total++;
+					clicks.push(currentTime);
+				});
+				setInterval(_ => {
+					let currentTime = new Date();
+					for (let [i, e] of clicks.entries()) {
+						if ((currentTime.getTime() - e.getTime()) / 1000 >= 1) {
+							clicks.splice(i, 1);
+						}
+					}
+					document.querySelector("div.panel.left span.label.cps").innerText = clicks.length;
+					if (clicks.length > max) {
+						max = clicks.length;
+					}
+					document.querySelector("div.panel.left span.label.total").innerText = total;
+					document.querySelector("div.panel.left span.label.max").innerText = max;
+					document.querySelector("div.panel.left").style.filter = `brightness(${1 + clicks.length / 250})`;
+				}, 1);
+			}
+			{
+				let clicks = [];
+				let max = 0;
+				let total = 0;
+				var getRightCPS = function() {
+					return clicks.length;
+				}
+				var getRightMax = function() {
+					return max;
+				}
+				var getRightTotal = function() {
+					return total;
+				}
+				document.addEventListener("mousedown", event => {
+					if (event.button === 2) {
+						let currentTime = new Date();
+						total++;
+						clicks.push(currentTime);
+					}
+				});
+				document.addEventListener("contextmenu", event => {
+					event.preventDefault();
+				});
+				setInterval(_ => {
+					let currentTime = new Date();
+					for (let [i, e] of clicks.entries()) {
+						if ((currentTime.getTime() - e.getTime()) / 1000 >= 1) {
+							clicks.splice(i, 1);
+						}
+					}
+					document.querySelector("div.panel.right span.label.cps").innerText = clicks.length;
+					if (clicks.length > max) {
+						max = clicks.length;
+					}
+					document.querySelector("div.panel.right span.label.total").innerText = total;
+					document.querySelector("div.panel.right span.label.max").innerText = max;
+					document.querySelector("div.panel.right").style.filter = `brightness(${1 + clicks.length / 250})`;
+				}, 1);
+			}
+		</script>
+	</body>
+</html>
